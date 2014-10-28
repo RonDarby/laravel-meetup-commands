@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration {
             $table->string( 'products' );
             $table->float( 'total' );
             $table->integer( 'user_id' );
-            $table->integer( 'status' );
+            $table->integer( 'status_id' );
             $table->timestamps();
         });
 	}

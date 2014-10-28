@@ -21,14 +21,19 @@ class OrdersController extends BaseController {
 
     public function postPlace()
     {
+        Auth::loginUsingId(1);
         // TODO: Add some validation
         $product_id = Input::get( 'product_id' );
         $product = Product::find( $product_id );
+
+        $pending = Status::whereSlug( 'pending' )->first();
+
 
         $order = new Order();
         $order->products = $product->id;
         $order->total = $product->price;
         $order->user_id = Auth::id();
+        $order->status = $pending->id;
         $order->save();
 
         if( $order->id )
