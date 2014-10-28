@@ -6,7 +6,12 @@
  * Time: 02:52 PM
  */
 
+use Laracasts\Commander\CommanderTrait;
+use PayFast\Orders\UpdateOrdersCommand;
+
 class OrdersController extends BaseController {
+
+    use CommanderTrait;
 
     public function getIndex()
     {
@@ -60,9 +65,12 @@ class OrdersController extends BaseController {
 
     public function postItn()
     {
+
+
         // Some validation
         // Check if transaction duplicate, if not create a transaction and continue
 
+        $this->execute( UpdateOrdersCommand::class );
         // Update the order status
         // Email Buyer
         // Email Seller
