@@ -17,7 +17,6 @@ class CreateTransactionsTable extends Migration {
             $table->increments ( 'id' );
             $table->string( 'payment_id' );
             $table->integer( 'order_id' );
-            $table->integer( 'status' );
             $table->float( 'gross_amount' );
             $table->float( 'cost_amount' );
             $table->float( 'net_amount' );
