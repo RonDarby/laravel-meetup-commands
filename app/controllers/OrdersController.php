@@ -33,7 +33,7 @@ class OrdersController extends BaseController {
         $order->products = $product->id;
         $order->total = $product->price;
         $order->user_id = Auth::id();
-        $order->status = $pending->id;
+        $order->status_id = $pending->id;
         $order->save();
 
         if( $order->id )
