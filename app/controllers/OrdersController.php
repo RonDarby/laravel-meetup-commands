@@ -7,7 +7,8 @@
  */
 
 use Laracasts\Commander\CommanderTrait;
-use PayFast\Orders\UpdateOrdersCommand;
+use PayFast\Orders\UpdateOrdersStatusCommand;
+use PayFast\Orders\PlaceNewOrderCommand;
 
 class OrdersController extends BaseController {
 
@@ -22,19 +23,10 @@ class OrdersController extends BaseController {
     public function postPlace()
     {
         Auth::loginUsingId(1);
-        // TODO: Add some validation
-        $product_id = Input::get( 'product_id' );
-        $product = Product::find( $product_id );
-
-        $pending = Status::whereSlug( 'pending' )->first();
 
 
-        $order = new Order();
-        $order->products = $product->id;
-        $order->total = $product->price;
-        $order->user_id = Auth::id();
-        $order->status_id = $pending->id;
-        $order->save();
+        $order = $this->execute( PlaceNewOrderCommand::class );
+
 
         if( $order->id )
         {
@@ -56,7 +48,7 @@ class OrdersController extends BaseController {
             }
 
             $url .= '.payfast.co.za/eng/process?merchant_id='.$merchant_id.'&merchant_key='.$merchant_key.'&amount='.
-                $product->price.'&item_name='.urlencode( $product->name ).'&m_payment_id='.$order->id;
+                $order->product->price.'&item_name='.urlencode( $order->product->name ).'&m_payment_id='.$order->id;
 
             return Redirect::to( $url );
         }
@@ -75,11 +67,17 @@ class OrdersController extends BaseController {
         // Some validation
         // Check if transaction duplicate, if not create a transaction and continue
 
-        $this->execute( UpdateOrdersCommand::class );
+        $this->execute( UpdateOrdersStatusCommand::class );
         // Update the order status
         // Email Buyer
         // Email Seller
         // Update Stock Levels
+    }
+
+    public  function getOrderUpdate()
+    {
+        Input::merge( array( 'status_id' => 1, 'order_id' => 1 ) );
+        $this->execute( UpdateOrdersStatusCommand::class );
     }
 
 } 
